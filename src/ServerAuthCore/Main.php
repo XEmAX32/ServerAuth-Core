@@ -11,7 +11,7 @@ use ServerAuth\ServerAuth;
 class Main extends PluginBase implements Listener{
   
 public function onEnable(){
-if(ServerAuth::getAPI()->getAPIVersion() == ""){
+if(ServerAuth::getAPI()->getAPIVersion() == "1.1.0"){
 $this->getServer()->getPluginManager()->registerEvents($this, $this);
 $this->getLogger()->info(TextFormat::GREEN . "ServerAuth-Core Enabled!")
 }else{
@@ -23,17 +23,10 @@ public function onDisable(){
 $this->getLogger()->info(TextFormat::RED . "ServerAuth-Core Disabled!");
 }
 
-public function onJoin(){
+public function onPlayerJoin(PlayerJoinEvent $e){
 $player = $e->getPlayer();
-$name = $player->getName();
-if(!isPlayerRegistered($player)){
-foreach($this->getServer()->getOnlinePlayers() as $ps){
-$ps->sendMessage(TextFormat::BLUE .  "Welcome $name to this server!");
-$effect = Effect::getEffect(Effect::INVISIBLE);
-$effect->setVisible(false);
-$effect->setAmplifier(1); 
-$effect->setDuration(30 * 10 * 3);
-$player->addEffect($effect);
+if(!ServerAuth::getAPI()->isPlayerAuthenticated($player)){
+  $player->hidePlayer();
      }
     }
   }
